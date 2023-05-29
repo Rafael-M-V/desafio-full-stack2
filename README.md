@@ -9,11 +9,11 @@ O diretório está dividido em três sub-diretórios:
   3. `sql`: diretório auxiliar para gerar uma base de dados de teste inicial.
 
 ## BACKEND
-O Backend foi feito utilizando-se a tecnologia Spring Boot. Os arquivos principais encontram-se em `gerenciador/src/main/java`.
+O Backend foi feito utilizando-se a tecnologia Spring Boot. O banco de dados utilizado foi PostgreSQL. Os arquivos principais encontram-se em `gerenciador/src/main/java`.
 Não foi possível implementar todas as operações desejadas, porém foram implementadas:
   1. Listagem de linhas de uma base de dados (READ);
   2. Criação de uma nova linha na base de dados (CREATE);
-  3. Também foram implementados métodos para verificar se os dados recebidos do cliente estão bem formatados (quantidade de caracteres correta, etc.)
+  3. Também foram implementados métodos para verificar se os dados recebidos do cliente estão bem formatados (quantidade de caracteres correta, etc.).
 
 ## FRONTEND
 Desenvolvido em Angular.js, é capaz de visualizar todos os membros na base de dados e possui interface para adicionar novos membros.
