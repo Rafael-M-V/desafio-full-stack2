@@ -1,0 +1,24 @@
+html {
+    background-color: lightcyan;
+}
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border: 3px solid purple;
+    font-family: "helvetica neue", helvetica, arial, sans-serif;
+  }
+
+th {
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+tr {
+    text-align: center;
+    padding: 20px;
+}
+
+tr:hover {
+    background-color: lightblue;
+}

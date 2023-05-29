@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <head>
+        <title>Tabela de Empresas</title>
+        <link href="css/style.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <div ng-app="myApp" ng-controller="empresaCtrl"> 
+
+            <table id="tabela-empresas">
+                <thead>
+                    <th scope="col">CNPJ</th>
+                    <th scope="col">NOME</th>
+                    <th scope="col">CEP</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="empresa in empresas">
+                        <td>{{ empresa.cnpj }}</td>
+                        <td>{{ empresa.nome }}</td>
+                        <td>{{ empresa.cep }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Adicionar nova empresa</h2>
+            <input onkeypress="return onlyNumberKey(event)" type="text" maxlength="14" placeholder="CNPJ" ng-model="cnpj" /> <br>
+            <input type="text" placeholder="Nome" ng-model="nome" /> <br>
+            <input onkeypress="return onlyNumberKey(event)" type="text" maxlength="8" placeholder="CEP" ng-model="cep" /> <br>
+            <input type="button" value="Send" ng-click="postdata(cnpj, nome, cep);" />
+        </div>
+        
+        <script>
+
+            var app = angular.module('myApp', []);
+            app.controller('empresaCtrl', function($scope, $http) {
+                $http.get('http://localhost:8080/empresa')
+                .then(function (response) {
+                    $scope.empresas = response.data;
+                });
+
+                $scope.postdata = function(cnpj, nome, cep) {
+                    if(cnpj == null || nome == null || cep == null) {
+                        window.alert('Não é possível cadastrar: algum campo está vazio');
+                        return;
+                    }
+                    else if(cnpj.length != 14 || cep.length != 8) {
+                        window.alert('Não é possível cadastrar: formato incorreto de CNPJ ou CEP');
+                        return;
+                    }
+
+                    let data = {
+                        cnpj: cnpj,
+                        nome: nome,
+                        cep: cep
+                    };
+                    //console.log(JSON.stringify(data));
+                    $http.post('http://localhost:8080/empresa', JSON.stringify(data))
+                    .then(response => {
+                        if(response.data) $scope.msg = "Post request sent succesfully!";
+                        window.location.reload();
+                    }, response => {
+                        $scope.msg = "Service down";
+                        $scope.status = response.status;
+                        $scope.statusText = response.statusText;
+                        $scope.headers = response.headers();
+                    });
+                    
+                }
+
+                function onlyNumberKey(evt) {
+                // Only ASCII character in that range allowed
+                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                    return false;
+                return true;
+            }
+            
+            
+            });
+        </script>
+    </body>
+</html>

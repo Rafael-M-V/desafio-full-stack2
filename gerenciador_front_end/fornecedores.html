@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <head>
+        <title>Tabela de Fornecedores</title>
+        <link href="css/style.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <script>
+            function onlyNumberKey(evt) {
+                // Only ASCII character in that range allowed
+                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                    return false;
+                return true;
+            }
+        </script>
+        <div ng-app="myApp" ng-controller="fornecedorCtrl"> 
+
+            <table id="tabela-fornecedores">
+                <thead>
+                    <th scope="col">CNPJ/CPF</th>
+                    <th scope="col">NOME</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">CEP</th>
+                    <th scope="col">RG</th>
+                    <th scope="col">DATA DE NASC.</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="fornecedor in fornecedores">
+                        <td>{{ fornecedor.cnpjCpf }}</td>
+                        <td>{{ fornecedor.nome }}</td>
+                        <td>{{ fornecedor.email }}</td>
+                        <td>{{ fornecedor.cep }}</td>
+                        <td>{{ fornecedor.rg }}</td>
+                        <td>{{ fornecedor.dataNasc }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Adicionar novo fornecedor</h2>
+            <input onkeypress="return onlyNumberKey(event)" type="text" min="11" maxlength="14" placeholder="CNPJ/CPF" ng-model="cnpjCpf" /> <br>
+            <input type="text" placeholder="Nome" ng-model="nome" /> <br>
+            <input type="email" placeholder="Email" ng-model="email" /> <br>
+            <input onkeypress="return onlyNumberKey(event)" type="text" min="8" maxlength="8" placeholder="CEP" ng-model="cep" /> <br>
+            <input onkeypress="return onlyNumberKey(event)" type="text" min="9" maxlength="9" placeholder="RG" ng-model="rg" /> <br>
+            <input type="date" placeholder="Data de Nascimento" ng-model="dataNasc" /> <br>
+            É pessoa física? <input type="checkbox" id="check" value="Pessoa Física?" /> <br>
+            <input type="button" value="Send" ng-click="postdata(cnpjCpf, nome, email, cep, rg, dataNasc);" />
+        </div>
+
+        <script>
+        
+            var app = angular.module('myApp', []);
+            app.controller('fornecedorCtrl', function($scope, $http) {
+                $http.get("http://localhost:8080/fornecedor")
+                .then(function (response) {
+                    $scope.fornecedores = response.data;
+                });
+
+                $scope.postdata = function(cnpjCpf, nome, email, cep, rg, dataNasc) {
+                    let check = document.getElementById('check');
+                    if(cnpjCpf == null || nome == null || email == null || cep == null) {
+                        window.alert('Não é possível cadastrar: algum campo está vazio');
+                        return;
+                    }
+                    if(!check.checked) {
+                        if(cnpjCpf.length != 14) {
+                            window.alert('CNPJ mal formatado');
+                            return;
+                        }
+                        rg = null;
+                        dataNasc = undefined;
+                    }
+                    else {
+                        if (!rg || !dataNasc) {
+                            window.alert('Informações sobre pessoa física faltando');
+                            return;
+                        }
+                        else if(cnpjCpf.length != 11 || rg.length != 9) {
+                            window.alert('CPF e/ou RG mal formatado');
+                            return;
+                        }
+                       
+                    }
+
+                    
+                    dataNasc = formatDate(dataNasc);
+
+                    let data = {
+                        isPerson: check.checked,
+                        cnpjCpf: cnpjCpf,
+                        nome: nome,
+                        email: email,
+                        cep: cep,
+                        rg: rg,
+                        dataNasc: dataNasc
+                    };
+                    console.log(data);
+                    $http.post('http://localhost:8080/fornecedor', JSON.stringify(data))
+                    .then(response => {
+                        if(response.data) $scope.msg = "Post request sent succesfully!";
+                        window.location.reload();
+                    }, response => {
+                        $scope.msg = "Service down";
+                        $scope.status = response.status;
+                        $scope.statusText = response.statusText;
+                        $scope.headers = response.headers();
+                    });
+                }
+            });
+
+            function formatDate(dataNasc) {
+                if(dataNasc == undefined) {
+                    return undefined;
+                }
+
+                return dataNasc.getDate().toString() + 
+                    '/' + 
+                    (dataNasc.getMonth()+1).toString() +
+                    '/' +
+                    dataNasc.getFullYear();
+            }
+
+            
+
+        </script>
+    </body>
+</html>
