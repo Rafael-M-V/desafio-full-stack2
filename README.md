@@ -22,3 +22,10 @@ Não houve tempo para implementar os requisitos 'f', 'g' e 'h' (referência ao a
 ## Execução
 - Para executar o backend é recomendado que se use a IDE Intellij Idea, para que seja possível instalar facilmente todas as dependências. As dependências podem ser observadas em `gerenciador/pom.xml`. A classe `main` se encontra em `gerenciador/src/main/java/GerenciadorApplication.java`.
 - O frontend pode ser executado simplesmente abrindo as páginas HTML em algum navegador.
+
+## Lógica geral da aplicação
+- O usuário é capaz de entrar em duas páginas, uma que gerencia empresas e outra que gerencia fornecedores.
+- Quando entra na página se depara com uma tabela contendo todas as informações contidas na base de dados referentes ao escopo da página (empresas ou fornecedores).
+- Em baixo tem a opção de inserir novas linhas na tabela. A criação de novas linhas é restringida de acordo com algumas regras associadas aos dados em questão (número de digítos no CNPJ/CPF/RG/CEP, campos vazios, formatação de certos campos, etc.).
+- Por exemplo, uma pessoa física não pode criar um número com a quantidade de dígitos diferente de 11 no campo CNPJ/CPF. Em contrapartida uma empresa não pode criar um número com quantidade de dígitos diferente de 14 (número de dígitos no CNPJ).
+- A leitura e criação de linhas da tabela "relações" (tabela que diz quem é fornecedor de quem) foram implementadas no backend, mas não no frontend.
