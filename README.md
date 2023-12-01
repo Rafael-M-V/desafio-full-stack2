@@ -1,5 +1,5 @@
 # DesafioAccenture
-Desafio para processo seletivo na empresa Accenture
+Desafio de implementação full stack
 
 Autor: Rafael Meliani Velloso
 
